@@ -1,7 +1,29 @@
 package cl.kibernumacademy.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 public class ValidadorUsuarioTest {
-  
+
+  private ValidadorUsuario validadorUsuario;
+
+  @BeforeEach
+  void setUp() {
+    validadorUsuario = new ValidadorUsuario();
+  }
+
+  @Test
+  void testNombreValido() {
+    assertTrue(validadorUsuario.esNombreValido("Sofia")); // Es un nombre válido
+    assertFalse(validadorUsuario.esNombreValido("")); // vacio
+    assertFalse(validadorUsuario.esNombreValido(null)); // null
+    assertFalse(validadorUsuario.esNombreValido("A")); // nombre muy corto
+    assertNotNull(validadorUsuario);
+  }
+
+
 }
 
 /*
