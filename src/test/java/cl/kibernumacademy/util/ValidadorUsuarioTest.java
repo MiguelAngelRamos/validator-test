@@ -5,6 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat; 
+import static org.hamcrest.Matchers.*; 
+import static org.junit.jupiter.api.Assumptions.*;
+
 public class ValidadorUsuarioTest {
 
   private ValidadorUsuario validadorUsuario;
@@ -13,7 +17,7 @@ public class ValidadorUsuarioTest {
   void setUp() {
     validadorUsuario = new ValidadorUsuario();
   }
-
+  /* Métodos tradicionales con Junit 5 */
   @Test
   void testNombreValido() {
     assertTrue(validadorUsuario.esNombreValido("Sofia")); // Es un nombre válido
@@ -22,6 +26,18 @@ public class ValidadorUsuarioTest {
     assertFalse(validadorUsuario.esNombreValido("A")); // nombre muy corto
     assertNotNull(validadorUsuario);
   }
+
+  /* Métodos de Hamcrest */
+  @Test
+  void testEmailValido() {
+    // - El email debe tener formato válido (ejemplo: usuario@dominio.com).
+    assertThat(validadorUsuario.esEmailValido("sofia@correo.com"), is(true)); // valido
+    assertThat(validadorUsuario.esEmailValido("sofia@correo"), is(false)); // sin dominio (.cl, .org, .com)
+    assertThat(validadorUsuario.esEmailValido("correo.com"), is(false)); // sin @
+    assertThat(validadorUsuario.esEmailValido(null), is(false)); // Esperaria que retorne false para null
+  }
+
+  
 
 
 }
