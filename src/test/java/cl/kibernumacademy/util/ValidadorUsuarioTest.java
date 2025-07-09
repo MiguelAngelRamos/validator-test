@@ -6,12 +6,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import cl.kibernumacademy.modelo.Usuario;
 
 import static org.hamcrest.MatcherAssert.assertThat; 
 import static org.hamcrest.Matchers.*; 
 import static org.junit.jupiter.api.Assumptions.*;
+
+import java.util.stream.Stream;
 
 public class ValidadorUsuarioTest {
 
@@ -53,7 +56,7 @@ public class ValidadorUsuarioTest {
   // La edad debe ser mayor o igual a 18 años. (Junit 5)
   @Test
   void testMayorDeEdad() {
-    int edad = 18;
+    int edad = -20;
     assumeTrue(edad > 0, "La edad debe ser positiva"); // si no, el test se omite
     assertTrue(validadorUsuario.esMayorDeEdad(edad), "La edad debe ser mayor o igual a 18 años");
   }
@@ -71,6 +74,31 @@ public class ValidadorUsuarioTest {
     assertEquals(esperado, validadorUsuario.validarUsuario(usuario));
   }
 
+  /*Proveedor de usuarios validos */
+  static Stream<Usuario> usuariosValidos() {
+    return Stream.of(
+      new Usuario("Sofia", "sofia@correo.com", 20),
+      new Usuario("Richard", "richard@correo.com", 30));
+  }
+
+  @ParameterizedTest
+  @MethodSource("usuariosValidos")
+  void testUsuariosValidos(Usuario usuario) {
+    assertThat(validadorUsuario.validarUsuario(usuario), is(true));
+    assertThat(usuario.getNombre(), allOf(notNullValue(), not(blankString())));
+    assertThat(usuario.getEmail(), containsString("@")); 
+  }
+
+  @Test
+  void testValidarUsuarioAssumingThat() {
+    Usuario usuario = new Usuario("Sofia", "sofia@correo.com", 10);
+    // assertTrue(validadorUsuario.validarUsuario(usuario), "El usuario debe ser válido si es mayor de edad");
+    assumingThat(validadorUsuario.esMayorDeEdad(usuario.getEdad()), () -> {
+      System.out.println("Este mensaje solo aparece si es mayor de edad");
+      assertTrue(validadorUsuario.validarUsuario(usuario), "El usuario debe ser válido si es mayor de edad");
+    });
+
+  }
 }
 
 /*
