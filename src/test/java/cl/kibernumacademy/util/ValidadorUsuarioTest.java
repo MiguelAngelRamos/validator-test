@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import cl.kibernumacademy.modelo.Usuario;
 
 import static org.hamcrest.MatcherAssert.assertThat; 
 import static org.hamcrest.Matchers.*; 
@@ -49,11 +53,23 @@ public class ValidadorUsuarioTest {
   // La edad debe ser mayor o igual a 18 años. (Junit 5)
   @Test
   void testMayorDeEdad() {
-    int edad = 10;
-    assumeTrue(edad > 0, "La edad debe ser positiva");
-    assumeTrue(validadorUsuario.esMayorDeEdad(edad));
+    int edad = 18;
+    assumeTrue(edad > 0, "La edad debe ser positiva"); // si no, el test se omite
+    assertTrue(validadorUsuario.esMayorDeEdad(edad), "La edad debe ser mayor o igual a 18 años");
   }
 
+  /* Prueba parametriza usando CsvSource: varios modelos y combinaciones */
+  @ParameterizedTest
+  @CsvSource({
+    "Sofia, sofia@correo.com, 20, true",
+    "Ana, ana@mail.com, 15, false",
+    ", anonimo@correo.co, 22, false",
+    "Richard, richard.stallman@correo, 30, false",
+  })
+  void testValidarUsuario(String nombre, String email, int edad, boolean esperado) {
+    Usuario usuario = new Usuario(nombre, email, edad);
+    assertEquals(esperado, validadorUsuario.validarUsuario(usuario));
+  }
 
 }
 
@@ -63,6 +79,7 @@ public class ValidadorUsuarioTest {
  * JUnit:
  * - assertEquals(a, b): verifica que a == b
  * - assertTrue(cond): verifica que cond es true
+ * - assertTrue(cond, msg): verifica que cond es true, muestra msg si falla
  * - assertFalse(cond): verifica que cond es false
  * - assertNotNull(obj): verifica que obj no es null
  * - @BeforeEach/@AfterEach: ejecutan métodos antes/después de cada test
