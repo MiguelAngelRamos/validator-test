@@ -32,12 +32,27 @@ public class ValidadorUsuarioTest {
   void testEmailValido() {
     // - El email debe tener formato válido (ejemplo: usuario@dominio.com).
     assertThat(validadorUsuario.esEmailValido("sofia@correo.com"), is(true)); // valido
+    assertThat(validadorUsuario.esEmailValido("sofia @correo.com"), is(false)); // valido
     assertThat(validadorUsuario.esEmailValido("sofia@correo"), is(false)); // sin dominio (.cl, .org, .com)
     assertThat(validadorUsuario.esEmailValido("correo.com"), is(false)); // sin @
+    assertThat(validadorUsuario.esEmailValido("10"), is(false)); 
+    assertThat(validadorUsuario.esEmailValido("sofia@correo.com  algo"), is(false)); 
+    assertThat(validadorUsuario.esEmailValido("sofia@correo.com.ar"), is(true)); 
+    assertThat(validadorUsuario.esEmailValido("sofia@correo.comm"), is(true)); 
+    assertThat(validadorUsuario.esEmailValido("sofia@correo@com.com"), is(false)); 
+    assertThat(validadorUsuario.esEmailValido("@correo.cl"), is(false)); 
+    assertThat(validadorUsuario.esEmailValido(".@com.cl"), is(true)); 
     assertThat(validadorUsuario.esEmailValido(null), is(false)); // Esperaria que retorne false para null
+    // sofia@correo.comm o sofia@correo@com.com
   }
 
-  
+  // La edad debe ser mayor o igual a 18 años. (Junit 5)
+  @Test
+  void testMayorDeEdad() {
+    int edad = 10;
+    assumeTrue(edad > 0, "La edad debe ser positiva");
+    assumeTrue(validadorUsuario.esMayorDeEdad(edad));
+  }
 
 
 }
